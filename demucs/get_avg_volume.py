@@ -14,6 +14,7 @@ import torch as th
 import torchaudio as ta
 import numpy as np
 import json
+from math import log10
 
 from .apply import apply_model, BagOfModels
 from .audio import AudioFile, convert_audio
@@ -98,6 +99,11 @@ def get_parser():
     parser.add_argument("--two-stems",
                         dest="stem", metavar="STEM",
                         help="Only separate audio into {STEM} and no_{STEM}. ")
+    parser.add_argument("-j", "--jobs",
+                    default=0,
+                    type=int,
+                    help="Number of jobs. This can increase memory usage but will "
+                            "be much faster when multiple cores are available.")
 
     return parser
 
@@ -163,7 +169,8 @@ def main(opts=None):
 
         volumes = [np.sum(waveform ** 2)/len(waveform) for waveform in waveforms]
         average_volume = np.mean(volumes)
-        results[str(track.name.rsplit(".", 1)[0])]=average_volume
+        avg_db = 10*log10(average_volume)
+        results[str(track.name.rsplit(".", 1)[0])]=avg_db
 
     with open(str(out)+"/results.json", 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=4)
