@@ -85,6 +85,6 @@ def main(in_path,out_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Take audio files in input folder and Output the vocal volume results json file in output folder !")
     parser.add_argument("in_path", help="input folder path")
-    parser.add_argument("output", help="output folder path")
+    parser.add_argument("out_path", help="output folder path")
     args = parser.parse_args()
     main(args.in_path, args.out_path)
