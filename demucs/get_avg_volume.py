@@ -16,6 +16,7 @@ import numpy as np
 import json
 from math import log10
 
+
 from .apply import apply_model, BagOfModels
 from .audio import AudioFile, convert_audio
 from .htdemucs import HTDemucs
@@ -105,6 +106,7 @@ def get_parser():
                     help="Number of jobs. This can increase memory usage but will "
                             "be much faster when multiple cores are available.")
 
+
     return parser
 
 
@@ -171,6 +173,7 @@ def main(opts=None):
         average_volume = np.mean(volumes)
         avg_db = 10*log10(average_volume)
         results[str(track.name.rsplit(".", 1)[0])]=avg_db
+
 
     with open(str(out)+"/results.json", 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=4)
