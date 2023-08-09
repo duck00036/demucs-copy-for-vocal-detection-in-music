@@ -76,8 +76,8 @@ def main(in_path,out_path):
             errno.ENOENT, os.strerror(errno.ENOENT), in_path)
 
     if not os.path.isdir(out_path):
-        raise FileNotFoundError(
-            errno.ENOENT, os.strerror(errno.ENOENT), out_path)
+        os.makedirs(out_path)
+        print(f"{out_path} is created !!!")
     
     get_avg_volume(in_path,out_path)
 
