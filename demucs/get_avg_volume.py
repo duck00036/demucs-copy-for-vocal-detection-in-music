@@ -15,6 +15,7 @@ import torchaudio as ta
 import numpy as np
 import json
 from math import log10
+from tqdm import tqdm
 
 
 from .apply import apply_model, BagOfModels
@@ -145,21 +146,20 @@ def main(opts=None):
     
     results = {}
 
-    for track in args.tracks:
+    for track in tqdm(args.tracks):
         if not track.exists():
             print(
                 f"File {track} does not exist. If the path contains spaces, "
                 "please try again after surrounding the entire path with quotes \"\".",
                 file=sys.stderr)
             continue
-        print(f"Separating track {track}")
         wav = load_track(track, model.audio_channels, model.samplerate)
 
         ref = wav.mean(0)
         wav -= ref.mean()
         wav /= ref.std()
         sources = apply_model(model, wav[None], device=args.device, shifts=args.shifts,
-                              split=args.split, overlap=args.overlap, progress=True,
+                              split=args.split, overlap=args.overlap, progress=False,
                               num_workers=args.jobs, segment=args.segment)[0]
 
         sources *= ref.std()
