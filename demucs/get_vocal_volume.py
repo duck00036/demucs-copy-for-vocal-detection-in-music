@@ -9,7 +9,6 @@ import sys
 from typing import Dict, Tuple, Optional, IO
 import argparse
 
-model = "htdemucs"
 extensions = ["mp3", "wav", "ogg", "flac"]  # we will look for all those file types.
 # two_stems = None   # only separate one stems from the rest, for instance
 two_stems = "vocals"
@@ -49,7 +48,7 @@ def copy_process_streams(process: sp.Popen):
             std.write(buf)
             std.flush()
 
-def get_avg_volume(inp, outp):
+def get_avg_volume(inp, outp, model):
     # Customize the following options!
 
     cmd = ["python3", "-m", "demucs.get_avg_volume", "-o", str(outp), "-n", model]
@@ -69,7 +68,7 @@ def get_avg_volume(inp, outp):
     if p.returncode != 0:
         print("Command failed, something went wrong.")
 
-def main(in_path,out_path):
+def main(in_path,out_path,model):
     
     if not os.path.isdir(in_path):
         raise FileNotFoundError(
@@ -79,12 +78,17 @@ def main(in_path,out_path):
         os.makedirs(out_path)
         print(f"{out_path} is created !!!")
     
-    get_avg_volume(in_path,out_path)
+    get_avg_volume(in_path,out_path,model)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Take audio files in input folder and Output the vocal volume results json file in output folder !")
     parser.add_argument("in_path", help="input folder path")
     parser.add_argument("out_path", help="output folder path")
+    parser.add_argument("-n",
+                        "--model",
+                        type=str,
+                        default="htdemucs",
+                        help="pre-trained model type")
     args = parser.parse_args()
-    main(args.in_path, args.out_path)
+    main(args.in_path, args.out_path, args.model)
