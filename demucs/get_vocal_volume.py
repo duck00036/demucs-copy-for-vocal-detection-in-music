@@ -59,9 +59,6 @@ def get_avg_volume(inp, outp, model):
     if not files:
         print(f"No valid audio files in {inp}")
         return
-    print("Going to separate the files:")
-    print('\n'.join(files))
-    print("With command: ", " ".join(cmd))
     p = sp.Popen(cmd + files, stdout=sp.PIPE, stderr=sp.PIPE)
     copy_process_streams(p)
     p.wait()
