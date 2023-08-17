@@ -181,7 +181,7 @@ def main(opts=None):
         avg_db = 10*log10(average_volume)
         results[str(track.name.rsplit(".", 1)[0])]=avg_db
 
-        if i%5 == 0:
+        if (i+1)%5 == 0:
             with open(str(out)+"/results.json", 'w', encoding='utf-8') as f:
                 json.dump(results, f, ensure_ascii=False, indent=4)
 
