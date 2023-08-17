@@ -151,7 +151,7 @@ def main(opts=None):
         with open(str(out)+"/results.json", "r", encoding='utf-8') as json_file:
             results = json.load(json_file)
 
-    for i, track in tqdm(enumerate(args.tracks)):
+    for i, track in tqdm(enumerate(args.tracks), total=len(args.tracks)):
         if str(track.name.rsplit(".", 1)[0]) in results:
             continue
         if not track.exists():
