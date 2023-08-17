@@ -13,6 +13,7 @@ from dora.log import fatal
 import torch as th
 import torchaudio as ta
 import numpy as np
+import os
 import json
 from math import log10
 from tqdm import tqdm
@@ -145,8 +146,14 @@ def main(opts=None):
     print(f"Separated tracks will be stored in {out.resolve()}")
     
     results = {}
+    
+    if os.path.exists(str(out)+"/results.json"):
+        with open(str(out)+"/results.json", "r", encoding='utf-8') as json_file:
+            results = json.load(json_file)
 
-    for track in tqdm(args.tracks):
+    for i, track in tqdm(enumerate(args.tracks)):
+        if str(track.name.rsplit(".", 1)[0]) in results:
+            continue
         if not track.exists():
             print(
                 f"File {track} does not exist. If the path contains spaces, "
@@ -173,6 +180,10 @@ def main(opts=None):
         average_volume = np.mean(volumes)
         avg_db = 10*log10(average_volume)
         results[str(track.name.rsplit(".", 1)[0])]=avg_db
+
+        if i%5 == 0:
+            with open(str(out)+"/results.json", 'w', encoding='utf-8') as f:
+                json.dump(results, f, ensure_ascii=False, indent=4)
 
 
     with open(str(out)+"/results.json", 'w', encoding='utf-8') as f:
